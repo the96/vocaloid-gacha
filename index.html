@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#191726" />
+    <meta name="description" content="初音ミク Wiki の殿堂入り曲をランダムに選ぶ、静的なボカロ曲ガチャ。" />
+    <title>ボカロ曲ガチャ | 殿堂入りから一曲</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <a class="brand" href="./" aria-label="ボカロ曲ガチャ トップ">VOCALOID <span>GACHA</span></a>
+        <span class="edition">HALL OF FAME · 01</span>
+      </header>
+
+      <section class="hero" aria-labelledby="headline">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot"></span> A RANDOM MUSIC DISCOVERY</p>
+          <h1 id="headline">次に聴く曲、<br /><em>運にまかせよう。</em></h1>
+          <p class="lead">殿堂入りしたボカロ曲から、知らない一曲との出会いを。</p>
+          <div class="actions">
+            <button id="draw-one" class="button button-primary" type="button" disabled><span aria-hidden="true">✦</span> ランダムに1曲</button>
+            <button id="draw-ten" class="button button-secondary" type="button" disabled>10連ガチャ <span aria-hidden="true">↗</span></button>
+          </div>
+          <p id="status" class="status" role="status" aria-live="polite">曲データを読み込み中…</p>
+        </div>
+        <div class="art" aria-hidden="true">
+          <div class="art-halo"></div>
+          <div class="record"><div class="record-label"><span>VO<br />CAL</span><i></i><small>33⅓ RPM</small></div></div>
+          <span class="orbit orbit-a">✧</span><span class="orbit orbit-b">✳</span>
+          <div class="art-note">NO. <span id="art-count">—</span><br />SONGS IN THE BOX</div>
+        </div>
+      </section>
+
+      <section class="results" aria-labelledby="results-heading">
+        <div class="section-heading"><div><p class="eyebrow">YOUR PICKS</p><h2 id="results-heading">抽選結果</h2></div><span id="result-count" class="result-count">— / —</span></div>
+        <div id="empty" class="empty"><span aria-hidden="true">✳</span><p>ボタンを押すと、ここに曲が表示されます。</p></div>
+        <ol id="cards" class="cards" aria-live="polite" aria-relevant="additions removals" hidden></ol>
+      </section>
+
+      <footer class="footer">
+        <p>収録情報の出典：<a href="https://w.atwiki.jp/hmiku/tag/%E6%AE%BF%E5%A0%82%E5%85%A5%E3%82%8A" target="_blank" rel="noopener noreferrer">初音ミク Wiki「殿堂入り」タグ</a>。曲・動画の権利は各権利者に帰属します。</p>
+        <p>非公式の個人制作サイトです。Wiki とは提携していません。曲データは保存済みのスナップショットを使用します。</p>
+      </footer>
+    </main>
+  </body>
+</html>
