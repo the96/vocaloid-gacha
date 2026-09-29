@@ -10,6 +10,16 @@
     <script type="module" src="./app.js"></script>
   </head>
   <body>
+    <section id="stage" class="stage" role="dialog" aria-modal="true" aria-labelledby="stage-title" hidden>
+      <div class="stage-header"><h2 id="stage-title">今日の一曲と、出会おう。</h2><button id="skip" class="button button-secondary" type="button">演出をスキップ</button></div>
+      <div class="stage-center">
+        <div class="stage-vinyl" aria-hidden="true"><div class="spinning-record"><div class="vinyl-label">VOCALOID<br><strong>GACHA</strong><i></i></div></div></div>
+        <div class="notes" aria-hidden="true"><span>♬</span><span>♬</span><span>♬</span><span>♬</span><span>♬</span><span>♬</span></div>
+        <div id="stage-card" class="stage-card" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      <p id="stage-progress" class="stage-progress" role="status"></p>
+      <div class="whiteout" aria-hidden="true"></div>
+    </section>
     <main class="shell">
       <header class="masthead">
         <a class="brand" href="./" aria-label="ボカロ曲ガチャ トップ">VOCALOID <span>GACHA</span></a>
@@ -36,7 +46,7 @@
       </section>
 
       <section class="results" aria-labelledby="results-heading">
-        <div class="section-heading"><div><p class="eyebrow">YOUR PICKS</p><h2 id="results-heading">抽選結果</h2></div><span id="result-count" class="result-count">— / —</span></div>
+        <div class="section-heading"><div><p class="eyebrow">YOUR PICKS</p><h2 id="results-heading" tabindex="-1">抽選結果</h2></div><span id="result-count" class="result-count">— / —</span></div>
         <div id="empty" class="empty"><span aria-hidden="true">✳</span><p>ボタンを押すと、ここに曲が表示されます。</p></div>
         <ol id="cards" class="cards" aria-live="polite" aria-relevant="additions removals" hidden></ol>
       </section>

@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "node --check app.js && node --check draw.js && node --check scripts/verify.mjs && python -m py_compile scripts/update_songs.py",
-    "test": "node --test && python -m unittest discover -s tests -p 'test_*.py'",
-    "build": "node scripts/verify.mjs"
+    "lint": "node --check app.js && node --check draw.js && node --check sequence.js && node --check scripts/verify.mjs && python -m py_compile scripts/update_songs.py",
+    "test": "node --test && python -m unittest discover -s tests -p \"test_*.py\"",
+    "build": "node scripts/verify.mjs",
+    "data:verify": "node scripts/verify.mjs --complete"
   }
 }

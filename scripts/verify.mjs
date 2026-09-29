@@ -20,3 +20,24 @@ for (const song of data.songs) {
   ids.add(id);
 }
 console.log(`Static build verified: ${data.songs.length} songs. No bundling required.`);
+
+const report = JSON.parse(readFileSync('data/collection-report.json', 'utf8'));
+if (process.argv.includes('--complete')) {
+  assert.equal(report.published, true, 'Full collection is incomplete; see data/collection-report.json');
+  assert.equal(report.pagesFetched, 148, 'All requested 148 pages must be fetched');
+  assert.deepEqual(report.missingPages, []);
+  assert.equal(Object.keys(report.duplicateWikiUrls).length, 0);
+  assert.ok(report.duplicateOriginalUrls && typeof report.duplicateOriginalUrls === 'object');
+  assert.deepEqual(data.coverage?.pages, Array.from({ length: 148 }, (_, i) => i + 1));
+  assert.equal(report.uniqueSongs, data.songs.length);
+  assert.deepEqual(report.unexpectedPageSizes, []);
+  for (let page = 1; page < 148; page++) assert.equal(report.pageCounts[page], 50);
+  assert.ok(report.pageCounts[148] >= 1 && report.pageCounts[148] <= 50);
+  assert.equal(report.detailsFetched, data.songs.length, 'Detail pages remain unfetched');
+  assert.ok(data.songs.every(song => song.wikiUrl), 'Every collected song needs a Wiki page URL');
+  const duplicateOriginalCount = Object.keys(report.duplicateOriginalUrls).length;
+  if (duplicateOriginalCount) console.warn(`${duplicateOriginalCount} original video URL(s) are shared by multiple Wiki pages; review report.`);
+  console.log('148-page collection verified. Unknown metadata remains explicitly null.');
+} else if (!report.published) {
+  console.warn('Data expansion INCOMPLETE. Build success does not certify 148-page collection.');
+}
