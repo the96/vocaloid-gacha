@@ -24,11 +24,13 @@ export function drawSongs(songs, amount, previousId, randomValues = globalThis.c
   return result;
 }
 
-export function filterSongs(songs, releaseYear = '', minimumViews = 0) {
-  const year = releaseYear === '' ? null : Number(releaseYear);
+export function filterSongs(songs, releaseYearFrom = '', releaseYearTo = '', minimumViews = 0) {
+  const hasYearRange = releaseYearFrom !== '' || releaseYearTo !== '';
+  const from = releaseYearFrom === '' ? -Infinity : Number(releaseYearFrom);
+  const to = releaseYearTo === '' ? Infinity : Number(releaseYearTo);
   const floor = Number(minimumViews) || 0;
   return songs.filter(song =>
-    (year === null || song.releaseYear === year) &&
+    (!hasYearRange || (Number.isInteger(song.releaseYear) && song.releaseYear >= from && song.releaseYear <= to)) &&
     (Number(song.viewCountFloor) || 100000) >= floor
   );
 }

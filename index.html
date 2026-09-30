@@ -32,8 +32,9 @@
           <h1 id="headline">次に聴く曲、<br /><em>運にまかせよう。</em></h1>
           <p class="lead">殿堂入りしたボカロ曲から、知らない一曲との出会いを。</p>
           <div class="filters" aria-label="抽選対象の絞り込み">
-            <label>リリース年<select id="year-filter"><option value="">すべての年</option></select></label>
-            <label>再生到達<select id="view-filter">
+            <label>開始年<select id="year-from"><option value="">下限なし</option></select></label>
+            <label>終了年<select id="year-to"><option value="">上限なし</option></select></label>
+            <label class="view-filter-label">再生到達<select id="view-filter">
               <option value="0">殿堂入り（10万以上）</option>
               <option value="500000">50万以上 · SR</option>
               <option value="1000000">伝説入り（100万以上）· SSR</option>

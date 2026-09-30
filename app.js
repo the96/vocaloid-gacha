@@ -16,7 +16,8 @@ const stageProgress = document.querySelector('#stage-progress');
 const skipButton = document.querySelector('#skip');
 const shell = document.querySelector('.shell');
 const resultsHeading = document.querySelector('#results-heading');
-const yearFilter = document.querySelector('#year-filter');
+const yearFrom = document.querySelector('#year-from');
+const yearTo = document.querySelector('#year-to');
 const viewFilter = document.querySelector('#view-filter');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let songs = [];
@@ -145,17 +146,19 @@ oneButton.addEventListener('click', () => draw(1));
 tenButton.addEventListener('click', () => draw(10));
 
 function applyFilters() {
-  eligibleSongs = filterSongs(songs, yearFilter.value, viewFilter.value);
+  eligibleSongs = filterSongs(songs, yearFrom.value, yearTo.value, viewFilter.value);
   const total = eligibleSongs.length;
   oneButton.disabled = total < 1;
   tenButton.disabled = total < 10;
   count.textContent = `0 / ${total}`;
-  status.textContent = total ? `${total.toLocaleString('ja-JP')}曲が抽選対象です。` : '条件に合う曲がありません。';
+  const invalidRange = yearFrom.value && yearTo.value && Number(yearFrom.value) > Number(yearTo.value);
+  status.textContent = invalidRange ? '開始年は終了年以前にしてください。' : total ? `${total.toLocaleString('ja-JP')}曲が抽選対象です。` : '条件に合う曲がありません。';
   cards.hidden = true;
   empty.hidden = false;
 }
 
-yearFilter.addEventListener('change', applyFilters);
+yearFrom.addEventListener('change', applyFilters);
+yearTo.addEventListener('change', applyFilters);
 viewFilter.addEventListener('change', applyFilters);
 
 try {
@@ -164,8 +167,10 @@ try {
   const data = await response.json();
   songs = data.songs.filter(song => typeof song.title === 'string' && song.title && typeof song.wikiUrl === 'string');
   if (songs.length < 2) throw new Error('曲数が足りません');
-  const years = [...new Set(songs.map(song => song.releaseYear).filter(Number.isInteger))].sort((a, b) => b - a);
-  yearFilter.append(...years.map(year => Object.assign(document.createElement('option'), { value: String(year), textContent: `${year}年` })));
+  const years = [...new Set(songs.map(song => song.releaseYear).filter(Number.isInteger))].sort((a, b) => a - b);
+  const yearOptions = () => years.map(year => Object.assign(document.createElement('option'), { value: String(year), textContent: `${year}年` }));
+  yearFrom.append(...yearOptions());
+  yearTo.append(...yearOptions());
   artCount.textContent = songs.length.toLocaleString('ja-JP');
   applyFilters();
   status.textContent = `${songs.length.toLocaleString('ja-JP')}曲を収録 · データ更新日 ${data.updatedAt}`;

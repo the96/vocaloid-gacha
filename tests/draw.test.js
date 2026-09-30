@@ -20,10 +20,14 @@ test('ten draws contain ten distinct songs and exclude previous final pick', () 
 
 test('year and confirmed view floor filters combine', () => {
   const sample = [
-    { releaseYear: 2020, viewCountFloor: 100000 },
+    { releaseYear: 2019, viewCountFloor: 100000 },
     { releaseYear: 2020, viewCountFloor: 1000000 },
     { releaseYear: 2021, viewCountFloor: 10000000 },
+    { releaseYear: null, viewCountFloor: 100000 },
   ];
-  assert.deepEqual(filterSongs(sample, '2020', '500000'), [sample[1]]);
-  assert.deepEqual(filterSongs(sample, '', '5000000'), [sample[2]]);
+  assert.deepEqual(filterSongs(sample, '2020', '2021', '500000'), [sample[1], sample[2]]);
+  assert.deepEqual(filterSongs(sample, '', '2020', '0'), [sample[0], sample[1]]);
+  assert.deepEqual(filterSongs(sample, '2021', '', '5000000'), [sample[2]]);
+  assert.deepEqual(filterSongs(sample, '2021', '2020', '0'), []);
+  assert.deepEqual(filterSongs(sample, '', '', '0'), sample);
 });
