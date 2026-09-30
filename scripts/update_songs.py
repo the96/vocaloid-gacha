@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import sys
 import time
+import xml.etree.ElementTree as ET
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse, parse_qs, unquote
 from urllib.request import Request, urlopen
@@ -21,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = 'https://w.atwiki.jp/hmiku/tag/%E6%AE%BF%E5%A0%82%E5%85%A5%E3%82%8A'
 OUTPUT = ROOT / 'data/songs.json'
 PAGE_RE = re.compile(r'^/hmiku/pages/(\d+)\.html$')
-PARSER_VERSION = 4
+PARSER_VERSION = 5
 
 
 class Blocked(RuntimeError):
@@ -164,6 +165,16 @@ def song_details(document):
         return ''.join(metadata_text(child) for child in value.children)
 
     text = '\n'.join(metadata_text(node) for node in front_matter)
+
+    # Registration tags are factual metadata maintained by the Wiki. A year is
+    # accepted only from an exact YYYY年 tag; never infer it from prose/title.
+    tag_names = {
+        re.sub(r'\s+', ' ', node.text()).strip()
+        for node in body.walk()
+        if node.tag == 'a' and '/hmiku/tag/' in node.attrs.get('href', '')
+    }
+    years = sorted({int(tag[:-1]) for tag in tag_names if re.fullmatch(r'(?:19|20)\d{2}年', tag)})
+    release_year = years[0] if len(years) == 1 else None
     # Accept combined labels such as 作詞・作曲・編曲・動画, but require the
     # literal 作曲 field in front matter. Labels such as 制作/聴覚 stay unknown.
     credit_pattern = re.compile(r'(?:^|\n)\s*(?:[^：:\n]*作曲[^：:\n]*)\s*[：:]\s*([^\n]+)')
@@ -173,6 +184,8 @@ def song_details(document):
     names = [re.split(r'\s+(?:編曲|作詞|唄|歌|調声|動画|イラスト)\s*[：:]', s)[0].strip() for s in names]
     names = sorted(set(names))
     issues = []
+    if not release_year:
+        issues.append('release_year_conflict' if len(years) > 1 else 'release_year_unconfirmed')
     composer = names[0] if len(names) == 1 and 0 < len(names[0]) <= 100 else None
     if not composer:
         issues.append('composer_conflict' if len(names) > 1 else 'composer_unconfirmed')
@@ -209,7 +222,54 @@ def song_details(document):
             candidates.append(candidate)
     if not primary_url:
         issues.append('original_unconfirmed')
-    return {'composer': composer, 'originalUrl': primary_url, 'videoCandidates': candidates, 'issues': issues}
+
+    # Every source item is confirmed at 100k by membership in the 殿堂入り
+    # listing. Tags provide a lower bound when the NicoNico API is unavailable;
+    # exact current counts are collected separately from the confirmed video.
+    view_count_floor = 100_000
+    if 'ミリオン達成曲' in tag_names:
+        view_count_floor = 1_000_000
+    if 'テンミリオン達成曲' in tag_names:
+        view_count_floor = 10_000_000
+    return {
+        'composer': composer, 'originalUrl': primary_url,
+        'releaseYear': release_year, 'viewCountFloor': view_count_floor,
+        'videoCandidates': candidates, 'issues': issues,
+    }
+
+
+def niconico_stats(document):
+    root = ET.fromstring(document)
+    if root.attrib.get('status') != 'ok':
+        code = root.findtext('./error/code') or 'unknown'
+        return {'viewCount': None, 'publishedAt': None, 'unavailableReason': code}
+    thumb = root.find('./thumb')
+    if thumb is None:
+        raise ValueError('NicoNico API response has no thumb metadata')
+    count = int(thumb.findtext('view_counter'))
+    published = thumb.findtext('first_retrieve')
+    if count < 0 or not published or not re.match(r'^\d{4}-\d{2}-\d{2}T', published):
+        raise ValueError('NicoNico API returned invalid view/date metadata')
+    return {'viewCount': count, 'publishedAt': published, 'unavailableReason': None}
+
+
+def niconico_id(url):
+    if not url:
+        return None
+    parsed = urlparse(url)
+    if parsed.hostname not in ('www.nicovideo.jp', 'nicovideo.jp'):
+        return None
+    match = re.fullmatch(r'/watch/(sm\d+|nm\d+|so\d+)', parsed.path)
+    return match[1] if match else None
+
+
+def count_floor(count, fallback=100_000):
+    if not isinstance(count, int):
+        return fallback
+    for threshold in (10_000_000, 5_000_000, 1_000_000, 500_000):
+        if count >= threshold:
+            return max(fallback, threshold)
+    return fallback
 
 
 def atomic_json(path, value):
@@ -251,11 +311,11 @@ class Fetcher:
             time.sleep(self.delay * (2 ** (attempt + 1)))
 
 
-def collect(pages=148, delay=1.5, cache=None, output=OUTPUT, report=None, fetcher=None, overrides=None, index_only=False):
+def collect(pages=148, delay=1.5, video_delay=0.5, cache=None, output=OUTPUT, report=None, fetcher=None, video_fetcher=None, overrides=None, index_only=False):
     cache = Path(cache or ROOT / '.cache/song-metadata.json')
     report = Path(report or ROOT / 'data/collection-report.json')
-    state = json.loads(cache.read_text(encoding='utf-8')) if cache.exists() else {'version': PARSER_VERSION, 'source': SOURCE, 'pages': {}, 'details': {}}
-    if state.get('source') != SOURCE or state.get('version') not in (2, 3, PARSER_VERSION):
+    state = json.loads(cache.read_text(encoding='utf-8')) if cache.exists() else {'version': PARSER_VERSION, 'source': SOURCE, 'pages': {}, 'details': {}, 'videoStats': {}}
+    if state.get('source') != SOURCE or state.get('version') not in (2, 3, 4, PARSER_VERSION):
         raise ValueError('Incompatible checkpoint: use a new --cache path')
     if state.get('version') == 2:
         # Version 2 split the flattened body at the table-of-contents word 歌詞,
@@ -264,13 +324,18 @@ def collect(pages=148, delay=1.5, cache=None, output=OUTPUT, report=None, fetche
         state['version'] = PARSER_VERSION
         state['details'] = {}
         atomic_json(cache, state)
-    elif state.get('version') == 3:
+    elif state.get('version') in (3, 4):
+        if state.get('version') == 4:
+            raise ValueError('Version 4 has no year/view metadata: use a new --cache path')
         # Version 4 improves only unresolved composer credits. Keep every
         # confirmed detail and retry the small unknown subset from real HTML.
         state['version'] = PARSER_VERSION
         state['details'] = {url: detail for url, detail in state['details'].items() if detail.get('composer') is not None}
         atomic_json(cache, state)
+    custom_fetcher = fetcher is not None
     fetcher = fetcher or Fetcher(delay)
+    video_fetcher = video_fetcher if video_fetcher is not None else None if custom_fetcher else Fetcher(video_delay)
+    state.setdefault('videoStats', {})
     errors = {}
     halt = None
     reviewed = json.loads(Path(overrides).read_text(encoding='utf-8')) if overrides else {}
@@ -329,10 +394,39 @@ def collect(pages=148, delay=1.5, cache=None, output=OUTPUT, report=None, fetche
                 errors[url] = str(error)
                 # Missing details remain absent and are retried on the next run.
 
+    if not halt and not index_only and video_fetcher:
+        for index, (url, detail) in enumerate(state['details'].items(), 1):
+            if url not in gathered:
+                continue
+            video_id = niconico_id(detail.get('originalUrl'))
+            if not video_id or video_id in state['videoStats']:
+                continue
+            api_url = f'https://ext.nicovideo.jp/api/getthumbinfo/{video_id}'
+            try:
+                state['videoStats'][video_id] = {**niconico_stats(video_fetcher(api_url)), 'checkedAt': stamp()}
+                save()
+                print(f'Video {index}/{len(state["details"])}', file=sys.stderr, flush=True)
+            except Blocked as error:
+                halt = str(error)
+                errors[f'video:{video_id}'] = halt
+                break
+            except (OSError, ValueError, ET.ParseError) as error:
+                errors[f'video:{video_id}'] = str(error)
+
     songs = []
     for url, song in gathered.items():
         detail = state['details'].get(url, {})
-        song.update(composer=detail.get('composer'), originalUrl=detail.get('originalUrl'))
+        video_id = niconico_id(detail.get('originalUrl'))
+        stats = state['videoStats'].get(video_id, {}) if video_id else {}
+        release_year = detail.get('releaseYear')
+        if release_year is None and stats.get('publishedAt'):
+            release_year = int(stats['publishedAt'][:4])
+        song.update(
+            composer=detail.get('composer'), originalUrl=detail.get('originalUrl'),
+            releaseYear=release_year,
+            niconicoViewCount=stats.get('viewCount'),
+            viewCountFloor=count_floor(stats.get('viewCount'), detail.get('viewCountFloor') or 100_000),
+        )
         for field in ('composer', 'originalUrl'):
             if field in reviewed.get(url, {}):
                 song[field] = reviewed[url][field]
@@ -358,6 +452,10 @@ def collect(pages=148, delay=1.5, cache=None, output=OUTPUT, report=None, fetche
         'detailsFetched': len(songs) - len(missing_details), 'missingDetails': missing_details,
         'composerUnconfirmed': sum(s['composer'] is None for s in songs),
         'originalUnconfirmed': sum(s['originalUrl'] is None for s in songs),
+        'releaseYearUnconfirmed': sum(s['releaseYear'] is None for s in songs),
+        'niconicoViewsFetched': sum(s['niconicoViewCount'] is not None for s in songs),
+        'niconicoViewsUnavailable': sum(niconico_id(s['originalUrl']) is not None and s['niconicoViewCount'] is None for s in songs),
+        'viewCountFloors': dict(sorted(Counter(s['viewCountFloor'] for s in songs).items())),
         'duplicateWikiUrls': duplicate_urls,
         'duplicateOriginalUrls': duplicate_original_urls,
         'duplicateTitles': [t for t, n in title_counts.items() if n > 1],
@@ -381,14 +479,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--pages', type=int, default=148)
     parser.add_argument('--delay', type=float, default=1.5)
+    parser.add_argument('--video-delay', type=float, default=0.5, help='Delay between NicoNico metadata API requests')
     parser.add_argument('--cache', type=Path)
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--report', type=Path)
     parser.add_argument('--overrides', type=Path, help='Reviewed metadata keyed by canonical Wiki URL')
     parser.add_argument('--index-only', action='store_true', help='Collect all titles/URLs; details can be resumed later')
     args = parser.parse_args()
-    if args.pages < 1 or args.delay < 0.5:
-        parser.error('--pages must be positive; --delay must be at least 0.5')
+    if args.pages < 1 or args.delay < 0.5 or args.video_delay < 0.2:
+        parser.error('--pages must be positive; --delay >= 0.5 and --video-delay >= 0.2')
     result = collect(**vars(args))
     return 0 if result['status'] == 'complete' else 2
 

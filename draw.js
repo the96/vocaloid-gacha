@@ -23,3 +23,12 @@ export function drawSongs(songs, amount, previousId, randomValues = globalThis.c
   }
   return result;
 }
+
+export function filterSongs(songs, releaseYear = '', minimumViews = 0) {
+  const year = releaseYear === '' ? null : Number(releaseYear);
+  const floor = Number(minimumViews) || 0;
+  return songs.filter(song =>
+    (year === null || song.releaseYear === year) &&
+    (Number(song.viewCountFloor) || 100000) >= floor
+  );
+}

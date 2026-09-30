@@ -14,6 +14,9 @@ for (const song of data.songs) {
   assert.ok(typeof song.composer === 'string' || song.composer === null, 'Composer must be a name or null');
   assert.ok(typeof song.wikiUrl === 'string', 'Wiki URL must be a string');
   assert.ok(song.originalUrl === null || /^https:\/\/(www\.nicovideo\.jp|www\.youtube\.com)\//.test(song.originalUrl), 'Original URL must be an approved video link');
+  assert.ok(Number.isInteger(song.releaseYear) || song.releaseYear === null, 'Release year must be an integer or null');
+  assert.ok([100000, 500000, 1000000, 5000000, 10000000].includes(song.viewCountFloor), 'View count floor must be a supported confirmed milestone');
+  assert.ok(Number.isInteger(song.niconicoViewCount) || song.niconicoViewCount === null, 'NicoNico view count must be an integer or null');
   if (song.wikiUrl) assert.match(song.wikiUrl, /^https:\/\/w\.atwiki\.jp\/hmiku\/pages\/\d+\.html$/);
   const id = song.wikiUrl || song.title;
   assert.ok(!ids.has(id), `Duplicate song: ${id}`);
@@ -35,6 +38,11 @@ if (process.argv.includes('--complete')) {
   assert.ok(report.pageCounts[148] >= 1 && report.pageCounts[148] <= 50);
   assert.equal(report.detailsFetched, data.songs.length, 'Detail pages remain unfetched');
   assert.ok(data.songs.every(song => song.wikiUrl), 'Every collected song needs a Wiki page URL');
+  assert.equal(report.releaseYearUnconfirmed, 0, 'Release years remain unconfirmed');
+  assert.ok(data.songs.every(song => Number.isInteger(song.releaseYear)), 'Every song needs a confirmed release year');
+  const niconicoOriginals = data.songs.filter(song => /^https:\/\/www\.nicovideo\.jp\//.test(song.originalUrl || '')).length;
+  assert.equal(report.niconicoViewsFetched + report.niconicoViewsUnavailable, niconicoOriginals, 'Every confirmed NicoNico original must be checked');
+  assert.equal(Object.values(report.viewCountFloors).reduce((sum, value) => sum + value, 0), data.songs.length, 'View milestone totals must cover every song');
   const duplicateOriginalCount = Object.keys(report.duplicateOriginalUrls).length;
   if (duplicateOriginalCount) console.warn(`${duplicateOriginalCount} original video URL(s) are shared by multiple Wiki pages; review report.`);
   console.log('148-page collection verified. Unknown metadata remains explicitly null.');

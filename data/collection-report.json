@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-29T18:51:44.346102+00:00",
+  "checkedAt": "2026-09-30T04:18:07.465915+00:00",
   "source": "https://w.atwiki.jp/hmiku/tag/%E6%AE%BF%E5%A0%82%E5%85%A5%E3%82%8A",
   "requestedPages": [
     1,
@@ -310,8 +310,18 @@
   "missingSongCount": 0,
   "detailsFetched": 7353,
   "missingDetails": [],
-  "composerUnconfirmed": 4,
+  "composerUnconfirmed": 6,
   "originalUnconfirmed": 1104,
+  "releaseYearUnconfirmed": 0,
+  "niconicoViewsFetched": 6005,
+  "niconicoViewsUnavailable": 166,
+  "viewCountFloors": {
+    "100000": 5548,
+    "500000": 811,
+    "1000000": 879,
+    "5000000": 87,
+    "10000000": 28
+  },
   "duplicateWikiUrls": {},
   "duplicateOriginalUrls": {
     "https://www.nicovideo.jp/watch/sm41735052": [
@@ -1579,6 +1589,46 @@
         },
         {
           "url": "https://www.nicovideo.jp/watch/sm5692896",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
+    "https://w.atwiki.jp/hmiku/pages/268.html": {
+      "issues": [
+        "composer_unconfirmed",
+        "original_unconfirmed"
+      ],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm1498552",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm2210361",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm1688293",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm1905330",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm1498816",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm5332562",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm5587040",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=aEUO9zFEz4E",
           "reason": "unclassified_embed_or_link"
         }
       ]
@@ -20593,6 +20643,22 @@
         }
       ]
     },
+    "https://w.atwiki.jp/hmiku/pages/13470.html": {
+      "issues": [
+        "composer_unconfirmed",
+        "original_unconfirmed"
+      ],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm13004628",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=-P6RhEeuFZQ",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
     "https://w.atwiki.jp/hmiku/pages/13474.html": {
       "issues": [
         "original_unconfirmed"
@@ -28559,6 +28625,7 @@
     },
     "https://w.atwiki.jp/hmiku/pages/21182.html": {
       "issues": [
+        "composer_conflict",
         "original_unconfirmed"
       ],
       "videoCandidates": [
@@ -42401,6 +42468,22 @@
         },
         {
           "url": "https://www.youtube.com/watch?v=fJGT8cqZFRk",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
+    "https://w.atwiki.jp/hmiku/pages/29375.html": {
+      "issues": [
+        "composer_unconfirmed",
+        "original_unconfirmed"
+      ],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm23586759",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=H92VqBRf3MI",
           "reason": "unclassified_embed_or_link"
         }
       ]
@@ -85989,6 +86072,43 @@
         }
       ]
     },
+    "https://w.atwiki.jp/hmiku/pages/51798.html": {
+      "issues": [],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm41945341",
+          "reason": "primary_article_media"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=5Tacl80JQ8Q",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=OEzshXTQPiE",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm41446976",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm40436164",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm40951559",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm42250487",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm41298704",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
     "https://w.atwiki.jp/hmiku/pages/51799.html": {
       "issues": [],
       "videoCandidates": [
@@ -88718,6 +88838,31 @@
         },
         {
           "url": "https://www.youtube.com/watch?v=CJ5a96p6WKo",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
+    "https://w.atwiki.jp/hmiku/pages/53755.html": {
+      "issues": [],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm42578988",
+          "reason": "primary_article_media"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=Or5lCqWyYE8",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm42577369",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm42581454",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm42134272",
           "reason": "unclassified_embed_or_link"
         }
       ]
@@ -92843,6 +92988,27 @@
         }
       ]
     },
+    "https://w.atwiki.jp/hmiku/pages/57704.html": {
+      "issues": [],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm43150136",
+          "reason": "primary_article_media"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=cirDXY3CkSk",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm45268949",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=6FaLuOPZQXk",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
     "https://w.atwiki.jp/hmiku/pages/57720.html": {
       "issues": [],
       "videoCandidates": [
@@ -93758,6 +93924,23 @@
         },
         {
           "url": "https://www.youtube.com/watch?v=vAFoNaPZ5Pk",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
+    "https://w.atwiki.jp/hmiku/pages/58995.html": {
+      "issues": [],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm43444228",
+          "reason": "primary_article_media"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=6oqD-wmJaec",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm43432816",
           "reason": "unclassified_embed_or_link"
         }
       ]
@@ -95417,7 +95600,9 @@
       ]
     },
     "https://w.atwiki.jp/hmiku/pages/61887.html": {
-      "issues": [],
+      "issues": [
+        "release_year_unconfirmed"
+      ],
       "videoCandidates": [
         {
           "url": "https://www.nicovideo.jp/watch/sm44150180",
@@ -96532,6 +96717,35 @@
         },
         {
           "url": "https://www.youtube.com/watch?v=9x7t1s4xMw4",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
+    "https://w.atwiki.jp/hmiku/pages/64542.html": {
+      "issues": [],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm44397533",
+          "reason": "primary_article_media"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=Ljr2wMSBHqU",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm44610947",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=Jn8gHsEuULY",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.nicovideo.jp/watch/sm45953521",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=F47puv0tErc",
           "reason": "unclassified_embed_or_link"
         }
       ]
@@ -97887,6 +98101,22 @@
         }
       ]
     },
+    "https://w.atwiki.jp/hmiku/pages/66159.html": {
+      "issues": [
+        "composer_unconfirmed",
+        "original_unconfirmed"
+      ],
+      "videoCandidates": [
+        {
+          "url": "https://www.nicovideo.jp/watch/sm44683022",
+          "reason": "unclassified_embed_or_link"
+        },
+        {
+          "url": "https://www.youtube.com/watch?v=6cDSJs-b_Us",
+          "reason": "unclassified_embed_or_link"
+        }
+      ]
+    },
     "https://w.atwiki.jp/hmiku/pages/66181.html": {
       "issues": [],
       "videoCandidates": [
@@ -98071,7 +98301,9 @@
       ]
     },
     "https://w.atwiki.jp/hmiku/pages/66645.html": {
-      "issues": [],
+      "issues": [
+        "composer_conflict"
+      ],
       "videoCandidates": [
         {
           "url": "https://www.nicovideo.jp/watch/sm44830903",
@@ -100999,223 +101231,6 @@
         },
         {
           "url": "https://www.youtube.com/watch?v=WDOXv04SEuc",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/268.html": {
-      "issues": [
-        "composer_unconfirmed",
-        "original_unconfirmed"
-      ],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm1498552",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm2210361",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm1688293",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm1905330",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm1498816",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm5332562",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm5587040",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=aEUO9zFEz4E",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/13470.html": {
-      "issues": [
-        "composer_unconfirmed",
-        "original_unconfirmed"
-      ],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm13004628",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=-P6RhEeuFZQ",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/29375.html": {
-      "issues": [
-        "composer_unconfirmed",
-        "original_unconfirmed"
-      ],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm23586759",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=H92VqBRf3MI",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/51798.html": {
-      "issues": [],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm41945341",
-          "reason": "primary_article_media"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=5Tacl80JQ8Q",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=OEzshXTQPiE",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm41446976",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm40436164",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm40951559",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm42250487",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm41298704",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/53755.html": {
-      "issues": [],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm42578988",
-          "reason": "primary_article_media"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=Or5lCqWyYE8",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm42577369",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm42581454",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm42134272",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/57704.html": {
-      "issues": [],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm43150136",
-          "reason": "primary_article_media"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=cirDXY3CkSk",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm45268949",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=6FaLuOPZQXk",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/58995.html": {
-      "issues": [],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm43444228",
-          "reason": "primary_article_media"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=6oqD-wmJaec",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm43432816",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/64542.html": {
-      "issues": [],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm44397533",
-          "reason": "primary_article_media"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=Ljr2wMSBHqU",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm44610947",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=Jn8gHsEuULY",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.nicovideo.jp/watch/sm45953521",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=F47puv0tErc",
-          "reason": "unclassified_embed_or_link"
-        }
-      ]
-    },
-    "https://w.atwiki.jp/hmiku/pages/66159.html": {
-      "issues": [
-        "composer_unconfirmed",
-        "original_unconfirmed"
-      ],
-      "videoCandidates": [
-        {
-          "url": "https://www.nicovideo.jp/watch/sm44683022",
-          "reason": "unclassified_embed_or_link"
-        },
-        {
-          "url": "https://www.youtube.com/watch?v=6cDSJs-b_Us",
           "reason": "unclassified_embed_or_link"
         }
       ]

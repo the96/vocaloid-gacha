@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from scripts.update_songs import Blocked, collect, song_details, tag_songs, SOURCE
+from scripts.update_songs import Blocked, collect, count_floor, niconico_stats, song_details, tag_songs, SOURCE
 
 
 def tag(ids, pages=148):
@@ -94,6 +94,20 @@ class UpdateParserTest(unittest.TestCase):
         self.assertEqual(result['composer'], 'ryo')
         self.assertEqual(result['originalUrl'], 'https://www.nicovideo.jp/watch/sm2398386')
         self.assertIn({'url': 'https://www.nicovideo.jp/watch/sm2010762', 'reason': 'cover_context'}, result['videoCandidates'])
+
+    def test_year_and_million_tags_are_factual_metadata(self):
+        html = '''<div id="wikibody"><a href="/hmiku/tag/2017%E5%B9%B4">2017年</a>
+        <a href="/hmiku/tag/%E3%83%9F%E3%83%AA%E3%82%AA%E3%83%B3">ミリオン達成曲</a>
+        <p>作曲：A</p></div>'''
+        result = song_details(html)
+        self.assertEqual(result['releaseYear'], 2017)
+        self.assertEqual(result['viewCountFloor'], 1_000_000)
+
+    def test_niconico_api_metadata_and_buckets(self):
+        xml = '<nicovideo_thumb_response status="ok"><thumb><view_counter>5234567</view_counter><first_retrieve>2017-05-31T19:34:59+09:00</first_retrieve></thumb></nicovideo_thumb_response>'
+        self.assertEqual(niconico_stats(xml)['viewCount'], 5_234_567)
+        self.assertEqual(count_floor(5_234_567), 5_000_000)
+        self.assertEqual(count_floor(10_000_001), 10_000_000)
 
 
 class ResumeTest(unittest.TestCase):

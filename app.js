@@ -1,4 +1,4 @@
-import { drawSongs } from './draw.js';
+import { drawSongs, filterSongs } from './draw.js';
 import { createSequence } from './sequence.js';
 
 const oneButton = document.querySelector('#draw-one');
@@ -16,8 +16,11 @@ const stageProgress = document.querySelector('#stage-progress');
 const skipButton = document.querySelector('#skip');
 const shell = document.querySelector('.shell');
 const resultsHeading = document.querySelector('#results-heading');
+const yearFilter = document.querySelector('#year-filter');
+const viewFilter = document.querySelector('#view-filter');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let songs = [];
+let eligibleSongs = [];
 let previousId = null;
 
 try { previousId = localStorage.getItem(storageKey); } catch { /* storage may be disabled */ }
@@ -34,6 +37,9 @@ function link(label, url) {
 function songCard(song, index, tag = 'li') {
   const item = document.createElement(tag);
   item.className = 'card';
+  const views = Number(song.viewCountFloor) || 100000;
+  const rarity = views >= 5000000 ? 'ssr-plus' : views >= 1000000 ? 'ssr' : views >= 500000 ? 'sr' : 'normal';
+  item.dataset.rarity = rarity;
   item.style.animationDelay = `${Math.min(index * 35, 300)}ms`;
 
   const top = document.createElement('div');
@@ -44,7 +50,7 @@ function songCard(song, index, tag = 'li') {
   const spark = document.createElement('span');
   spark.className = 'card-spark';
   spark.setAttribute('aria-hidden', 'true');
-  spark.textContent = '✳';
+  spark.textContent = rarity === 'ssr-plus' ? 'SSR+' : rarity === 'ssr' ? 'SSR' : rarity === 'sr' ? 'SR' : '✳';
   top.append(number, spark);
 
   const title = document.createElement('h3');
@@ -52,6 +58,13 @@ function songCard(song, index, tag = 'li') {
   const composer = document.createElement('p');
   composer.className = 'composer';
   composer.textContent = song.composer ? `作曲：${song.composer}` : '作曲者：未確認';
+  const facts = document.createElement('p');
+  facts.className = 'card-facts';
+  const year = song.releaseYear ? `${song.releaseYear}年` : '年不明';
+  const milestone = Number.isInteger(song.niconicoViewCount)
+    ? `ニコニコ ${Math.floor(song.niconicoViewCount / 10000).toLocaleString('ja-JP')}万再生`
+    : views >= 10000000 ? '1000万再生以上' : views >= 1000000 ? '100万再生以上' : '殿堂入り';
+  facts.textContent = `${year} · ${milestone}`;
 
   const links = document.createElement('div');
   links.className = 'card-links';
@@ -62,7 +75,7 @@ function songCard(song, index, tag = 'li') {
   record.setAttribute('aria-hidden', 'true');
   const sleeve = document.createElement('div');
   sleeve.className = 'card-copy';
-  sleeve.append(top, title, composer, links);
+  sleeve.append(top, title, composer, facts, links);
   item.append(record, sleeve);
   return item;
 }
@@ -72,7 +85,7 @@ function render(picks) {
   cards.replaceChildren(...items);
   cards.hidden = false;
   empty.hidden = true;
-  count.textContent = `${picks.length} / ${songs.length}`;
+  count.textContent = `${picks.length} / ${eligibleSongs.length}`;
   status.textContent = `${picks.length}曲を選びました。もう一度引けます。`;
 }
 
@@ -89,7 +102,7 @@ const sequence = createSequence({
     shell.inert = false;
     document.body.classList.remove('drawing');
     oneButton.disabled = false;
-    tenButton.disabled = songs.length < 10;
+    tenButton.disabled = eligibleSongs.length < 10;
     render(picks);
     resultsHeading.focus({ preventScroll: true });
     resultsHeading.scrollIntoView({ behavior: 'instant', block: 'start' });
@@ -97,8 +110,8 @@ const sequence = createSequence({
 });
 
 function draw(amount) {
-  if (sequence.active || !songs.length) return;
-  const picks = drawSongs(songs, amount, previousId);
+  if (sequence.active || !eligibleSongs.length) return;
+  const picks = drawSongs(eligibleSongs, amount, previousId);
   if (!picks.length) return;
   previousId = picks[picks.length - 1].wikiUrl || picks[picks.length - 1].title;
   try { localStorage.setItem(storageKey, previousId); } catch { /* storage may be disabled */ }
@@ -131,17 +144,31 @@ motionPreference.addEventListener('change', () => {
 oneButton.addEventListener('click', () => draw(1));
 tenButton.addEventListener('click', () => draw(10));
 
+function applyFilters() {
+  eligibleSongs = filterSongs(songs, yearFilter.value, viewFilter.value);
+  const total = eligibleSongs.length;
+  oneButton.disabled = total < 1;
+  tenButton.disabled = total < 10;
+  count.textContent = `0 / ${total}`;
+  status.textContent = total ? `${total.toLocaleString('ja-JP')}曲が抽選対象です。` : '条件に合う曲がありません。';
+  cards.hidden = true;
+  empty.hidden = false;
+}
+
+yearFilter.addEventListener('change', applyFilters);
+viewFilter.addEventListener('change', applyFilters);
+
 try {
   const response = await fetch(new URL('./data/songs.json', import.meta.url));
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const data = await response.json();
   songs = data.songs.filter(song => typeof song.title === 'string' && song.title && typeof song.wikiUrl === 'string');
   if (songs.length < 2) throw new Error('曲数が足りません');
-  oneButton.disabled = false;
-  tenButton.disabled = songs.length < 10;
+  const years = [...new Set(songs.map(song => song.releaseYear).filter(Number.isInteger))].sort((a, b) => b - a);
+  yearFilter.append(...years.map(year => Object.assign(document.createElement('option'), { value: String(year), textContent: `${year}年` })));
   artCount.textContent = songs.length.toLocaleString('ja-JP');
-  count.textContent = `0 / ${songs.length}`;
-  status.textContent = `${songs.length}曲を収録 · データ更新日 ${data.updatedAt}`;
+  applyFilters();
+  status.textContent = `${songs.length.toLocaleString('ja-JP')}曲を収録 · データ更新日 ${data.updatedAt}`;
 } catch (error) {
   status.textContent = `曲データを読み込めませんでした。ページを再読み込みしてください。 (${error.message})`;
 }

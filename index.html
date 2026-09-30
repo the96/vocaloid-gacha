@@ -31,6 +31,16 @@
           <p class="eyebrow"><span class="live-dot"></span> A RANDOM MUSIC DISCOVERY</p>
           <h1 id="headline">次に聴く曲、<br /><em>運にまかせよう。</em></h1>
           <p class="lead">殿堂入りしたボカロ曲から、知らない一曲との出会いを。</p>
+          <div class="filters" aria-label="抽選対象の絞り込み">
+            <label>リリース年<select id="year-filter"><option value="">すべての年</option></select></label>
+            <label>再生到達<select id="view-filter">
+              <option value="0">殿堂入り（10万以上）</option>
+              <option value="500000">50万以上 · SR</option>
+              <option value="1000000">伝説入り（100万以上）· SSR</option>
+              <option value="5000000">500万以上 · SSR+</option>
+              <option value="10000000">神話入り（1000万以上）</option>
+            </select></label>
+          </div>
           <div class="actions">
             <button id="draw-one" class="button button-primary" type="button" disabled><span aria-hidden="true">✦</span> ランダムに1曲</button>
             <button id="draw-ten" class="button button-secondary" type="button" disabled>10連ガチャ <span aria-hidden="true">↗</span></button>
