@@ -167,7 +167,7 @@ try {
   const data = await response.json();
   songs = data.songs.filter(song => typeof song.title === 'string' && song.title && typeof song.wikiUrl === 'string');
   if (songs.length < 2) throw new Error('曲数が足りません');
-  const years = [...new Set(songs.map(song => song.releaseYear).filter(Number.isInteger))].sort((a, b) => a - b);
+  const years = [...new Set(songs.map(song => song.releaseYear).filter(Number.isInteger))].sort((a, b) => b - a);
   const yearOptions = () => years.map(year => Object.assign(document.createElement('option'), { value: String(year), textContent: `${year}年` }));
   yearFrom.append(...yearOptions());
   yearTo.append(...yearOptions());
